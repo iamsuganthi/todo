@@ -4,6 +4,18 @@ Objective: Deploy a deliberately vulnerable two-tier app (VM DB + GKE Frontend) 
 Cloud Provider: GCP
 VCS: GitHub Actions
 
+## Phases at a glance
+
+| Phase | Name | What you deliver |
+| :---: | --- | --- |
+| **1** | Application Development (Next.js) | Todo app + API; env-based Mongo URI; `wizexercise.txt` exposure |
+| **2** | Containerization & Kubernetes Local Dev | Dockerfile, `docker-compose.yml`, `k8s/` manifests (incl. bad practices for the exercise) |
+| **3** | Cloud Infrastructure (Terraform) | VPC, DB VM, GCS, private GKE — intentionally vulnerable layout |
+| **4** | CI/CD & Security Controls (GitHub Actions) | Infra + app workflows with Snyk gates and GKE deploy |
+| **5** | Cloud Native Security Controls (GCP Native) | Audit logs, org policy, Security Command Center |
+
+---
+
 PHASE 1: Application Development (Next.js)
 
 Objective: Build the frontend and API logic.
