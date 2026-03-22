@@ -1,0 +1,212 @@
+:root {
+  /* Wiz-inspired: deep code-night base, electric blue, optimistic pink */
+  --bg-deep: #060a12;
+  --bg-mid: #0c1222;
+  --surface: #121a2e;
+  --surface-elevated: #1a2540;
+  --border: rgba(100, 140, 255, 0.18);
+  --border-strong: rgba(0, 180, 255, 0.35);
+  --text: #f0f4fc;
+  --muted: #8fa3c4;
+  --accent-blue: #2b7fff;
+  --accent-cyan: #00d4e8;
+  --accent-pink: #ff5ca8;
+  --accent-pink-soft: rgba(255, 92, 168, 0.15);
+  --danger: #ff6b8a;
+  --danger-border: rgba(255, 107, 138, 0.35);
+  --shadow-glow: 0 0 40px rgba(43, 127, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  line-height: 1.5;
+  background-color: var(--bg-deep);
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(43, 127, 255, 0.22), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(255, 92, 168, 0.08), transparent 45%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(0, 212, 232, 0.06), transparent 50%),
+    linear-gradient(180deg, var(--bg-mid) 0%, var(--bg-deep) 100%);
+  background-attachment: fixed;
+}
+
+main {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.25rem;
+  background: var(--accent-blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.sub code {
+  font-size: 0.8em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--accent-pink-soft);
+  color: #ffb8d9;
+  border: 1px solid rgba(255, 92, 168, 0.25);
+}
+
+.sub a {
+  color: var(--accent-cyan);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0, 212, 232, 0.4);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.sub a:hover {
+  color: var(--accent-pink);
+  border-bottom-color: rgba(255, 92, 168, 0.6);
+}
+
+form.add {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+form.add input {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+form.add input::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+form.add input:focus {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 3px rgba(43, 127, 255, 0.2);
+}
+
+form.add button {
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  background: var(--accent-blue);
+  box-shadow: var(--shadow-glow);
+  transition:
+    transform 0.12s ease,
+    filter 0.12s ease;
+}
+
+form.add button:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+form.add button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
+ul.todos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li.todo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+li.todo:last-child {
+  border-bottom: none;
+}
+
+li.todo label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+li.todo input[type="checkbox"] {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--accent-cyan);
+  cursor: pointer;
+}
+
+li.todo span.done {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+li.todo button.delete {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--danger-border);
+  border-radius: 8px;
+  background: rgba(255, 107, 138, 0.08);
+  color: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+li.todo button.delete:hover {
+  background: rgba(255, 107, 138, 0.18);
+  border-color: rgba(255, 107, 138, 0.55);
+}
+
+.error {
+  color: #ff9aad;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(255, 107, 138, 0.1);
+  border: 1px solid var(--danger-border);
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
