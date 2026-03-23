@@ -1,0 +1,37 @@
+# Routes DNS name "mangosteen-mongo" to the Mangosteen VM private IP (Mongo is not running in-cluster).
+#
+# Before apply: set endpoints[0].addresses[0] to the VM internal IP, e.g.:
+#   gcloud compute instances describe mangosteen-database \
+#     --zone=YOUR_ZONE --project=YOUR_PROJECT \
+#     --format='get(networkInterfaces[0].networkIP)'
+apiVersion: v1
+kind: Service
+metadata:
+  name: mangosteen-mongo
+  namespace: todoiz
+spec:
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: mangosteen-mongo-vm
+  namespace: todoiz
+  labels:
+    kubernetes.io/service-name: mangosteen-mongo
+    endpointslice.kubernetes.io/managed-by: mangosteen-manual
+addressType: IPv4
+endpoints:
+  - addresses:
+      # TODO: replace with mangosteen-database internal IP (10.1.0.0/24 in default Terraform).
+      - "10.1.0.4"
+    conditions:
+      ready: true
+      serving: true
+ports:
+  - name: mongo
+    port: 27017
+    protocol: TCP

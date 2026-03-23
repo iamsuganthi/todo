@@ -1,0 +1,45 @@
+# Mongo password: create Secret from secret-mongo.yaml.example, then apply before this Deployment.
+# mangosteen-mongo is a Service + EndpointSlice (see mangosteen-mongo.yaml) targeting the Mangosteen VM.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoiz
+  namespace: todoiz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoiz
+  template:
+    metadata:
+      labels:
+        app: todoiz
+    spec:
+      serviceAccountName: todoiz-sa
+      containers:
+        - name: app
+          image: australia-southeast1-docker.pkg.dev/clgcporg10-186/todoiz/todoiz-app:v1
+          # Always pull so a new amd64 push replaces a cached arm64 image under the same tag.
+          imagePullPolicy: Always
+          # Bypass image ENTRYPOINT (avoids docker-entrypoint.sh if the registry image is stale).
+          command: ["node"]
+          args: ["server.js"]
+          ports:
+            - containerPort: 3000
+          env:
+            # Kubelet sets HOSTNAME to the pod name; Next standalone uses it for bind. Force all interfaces.
+            - name: HOSTNAME
+              value: "0.0.0.0"
+            - name: PORT
+              value: "3000"
+            - name: MONGO_USER
+              value: mangosteenadmin
+            - name: MONGO_HOST
+              value: mangosteen-mongo
+            - name: MONGO_DB
+              value: mangosteen
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: todoiz-mongo
+                  key: password

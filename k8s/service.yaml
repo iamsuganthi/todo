@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: todoiz
+  namespace: todoiz
+spec:
+  type: LoadBalancer
+  selector:
+    app: todoiz
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
