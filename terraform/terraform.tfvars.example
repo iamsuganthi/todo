@@ -1,0 +1,7 @@
+# Terraform enables Compute, Container, Storage, and IAM APIs via google_project_service.
+# You can still pre-enable with gcloud if your org requires it.
+
+project_id        = "your-gcp-project-id"
+region            = "europe-west2"
+zone              = "europe-west2-a"
+db_admin_password = "mangosteen"
