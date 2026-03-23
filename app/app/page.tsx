@@ -84,7 +84,7 @@ export default function Page() {
 
   return (
     <main>
-      <h1>Todo Manager</h1>
+      <h1>Todoiz</h1>
       <p className="sub">
         Stay Organised..
       </p>
