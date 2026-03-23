@@ -1,2 +1,23 @@
-.vscode
-.vscode/*
+# Editor
+.vscode/
+
+# App (Next.js / Node)
+node_modules/
+.next/
+out/
+.env*.local
+*.log
+.DS_Store
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!terraform/terraform.tfvars.example
+crash.log
+override.tf
+override.tf.json
+
+# Kubernetes
+k8s/secret-mongo.yaml
