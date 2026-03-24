@@ -1,0 +1,32 @@
+# Only: `snyk iac test terraform/` and `snyk container test …` (no Terraform CLI, no Docker build, no deploy).
+#
+# Secret: SNYK_TOKEN
+name: Snyk
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snyk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Snyk CLI
+        uses: snyk/actions/setup@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: snyk iac test && snyk container test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: |
+          snyk iac test terraform/
+          snyk container test node:18-alpine --file=app/Dockerfile
