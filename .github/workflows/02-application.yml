@@ -1,0 +1,93 @@
+# Phase 4 — Wiz exercise: build, Snyk container gate (continue-on-error), push GAR, deploy GKE.
+#
+# Required GitHub secrets:
+#   GCP_SA_KEY     — JSON key with Artifact Registry push + GKE deploy (e.g. roles/storage.admin on repo,
+#                    container.developer, gke.* as needed for your org).
+#   SNYK_TOKEN     — Snyk API token (optional if you remove the Snyk step).
+#
+# Repository variables (Settings → Secrets and variables → Actions → Variables) recommended:
+#   GCP_PROJECT_ID        — e.g. clgcporg10-186
+#   GCP_REGION            — e.g. australia-southeast1
+#   GKE_CLUSTER_NAME      — e.g. todoiz-private-gke
+#   ARTIFACT_REGISTRY     — e.g. australia-southeast1-docker.pkg.dev/PROJECT/todoiz/todoiz-app:v1
+name: 02 — Application
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "k8s/**"
+      - ".github/workflows/02-application.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+  GCP_REGION: ${{ vars.GCP_REGION }}
+  GKE_CLUSTER_NAME: ${{ vars.GKE_CLUSTER_NAME }}
+  IMAGE: ${{ vars.ARTIFACT_REGISTRY }}
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (linux/amd64 for GKE)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: false
+          load: true
+          tags: ${{ env.IMAGE }}
+          platforms: linux/amd64
+
+      - name: Snyk container test (continue on error)
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        run: snyk container test "${{ env.IMAGE }}" --severity-threshold=low
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${{ env.GCP_REGION }}-docker.pkg.dev" --quiet
+
+      - name: Push image
+        run: docker push "${{ env.IMAGE }}"
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER_NAME }}
+          location: ${{ env.GCP_REGION }}
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f k8s/00-namespace.yaml
+          kubectl apply -f k8s/rbac.yaml
+          kubectl apply -f k8s/mangosteen-mongo.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl apply -f k8s/ingress.yaml
+
+      - name: Rollout restart (pick up new image)
+        run: kubectl rollout restart deployment/todoiz -n todoiz
