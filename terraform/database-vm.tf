@@ -22,6 +22,8 @@ resource "google_compute_instance" "database" {
   machine_type = "e2-medium"
   zone         = var.zone
 
+  allow_stopping_for_update = true
+
   tags = ["mangosteen-db"]
 
   boot_disk {
@@ -38,7 +40,7 @@ resource "google_compute_instance" "database" {
   service_account {
     email = google_service_account.db_vm.email
     scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_write",
+      "https://www.googleapis.com/auth/cloud-platform",
     ]
   }
 
