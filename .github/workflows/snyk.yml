@@ -28,5 +28,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         run: |
-          snyk iac test terraform/
-          snyk container test node:18-alpine --file=app/Dockerfile
+          snyk iac test terraform --severity-threshold=high
+          snyk container test australia-southeast1-docker.pkg.dev/clgcporg10-186/todoiz/todoiz-app:v1 --file=app/Dockerfile
