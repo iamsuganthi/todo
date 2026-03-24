@@ -1,4 +1,4 @@
-# Mongo password: create Secret from secret-mongo.yaml.example, then apply before this Deployment.
+# MongoDB: plain env MONGO_URI (replace password to match Terraform db_admin_password; URL-encode @ : / in password).
 # mangosteen-mongo is a Service + EndpointSlice (see mangosteen-mongo.yaml) targeting the Mangosteen VM.
 apiVersion: apps/v1
 kind: Deployment
@@ -32,14 +32,5 @@ spec:
               value: "0.0.0.0"
             - name: PORT
               value: "3000"
-            - name: MONGO_USER
-              value: mangosteenadmin
-            - name: MONGO_HOST
-              value: mangosteen-mongo
-            - name: MONGO_DB
-              value: mangosteen
-            - name: MONGO_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: todoiz-mongo
-                  key: password
+            - name: MONGO_URI
+              value: "mongodb://mangosteenadmin:change-me@mangosteen-mongo:27017/mangosteen"
