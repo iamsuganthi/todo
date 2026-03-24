@@ -1,10 +1,14 @@
+# ClusterIP: traffic enters via Ingress → GCE HTTP(S) load balancer (not Service LoadBalancer).
 apiVersion: v1
 kind: Service
 metadata:
   name: todoiz
   namespace: todoiz
+  annotations:
+    # Container-native NEGs for GCE Ingress backends (recommended on VPC-native GKE).
+    cloud.google.com/neg: '{"ingress": true}'
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: todoiz
   ports:

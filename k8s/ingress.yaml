@@ -1,0 +1,30 @@
+# GKE Ingress controller provisions a Google Cloud external HTTP(S) load balancer to backend Service `todoiz:80`.
+# Requires: k8s/service.yaml (ClusterIP) applied first.
+# Apply: kubectl apply -f k8s/ingress.yaml
+# Verify: kubectl get ingress -n todoiz
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todoiz
+  namespace: todoiz
+  annotations:
+    # Some GKE versions only fully reconcile when this is set alongside ingressClassName.
+    kubernetes.io/ingress.class: "gce"
+spec:
+  ingressClassName: gce
+  # Avoid relying on kube-system default-http-backend NEG (often the source of GLBC 404 NEG sync errors).
+  defaultBackend:
+    service:
+      name: todoiz
+      port:
+        number: 80
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: todoiz
+                port:
+                  number: 80
