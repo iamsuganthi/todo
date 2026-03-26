@@ -17,6 +17,23 @@ resource "google_storage_bucket_iam_member" "db_vm_backup_writer" {
   member = "serviceAccount:${google_service_account.db_vm.email}"
 }
 
+# gcloud compute instances create defaults to the project default CE SA; caller must have
+# iam.serviceAccountUser on that SA to attach it.
+data "google_compute_default_service_account" "default" {
+  project = var.project_id
+}
+
+resource "google_service_account_iam_member" "db_vm_user_on_default_compute_sa" {
+  service_account_id = data.google_compute_default_service_account.default.id
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.db_vm.email}"
+
+  depends_on = [
+    google_service_account.db_vm,
+    google_project_service.apis,
+  ]
+}
+
 resource "google_compute_instance" "database" {
   name         = "mangosteen-database"
   machine_type = "e2-medium"
