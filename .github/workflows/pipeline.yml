@@ -1,7 +1,7 @@
 # Only: `snyk iac test terraform/` and `snyk container test …` (no Terraform CLI, no Docker build, no deploy).
 #
 # Secret: SNYK_TOKEN
-name: Snyk
+name: Pipeline
 
 on:
   push:
