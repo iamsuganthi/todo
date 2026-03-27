@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  snyk:
+  security-can:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,3 +30,8 @@ jobs:
         run: |
           snyk iac test terraform --severity-threshold=high
           snyk container test australia-southeast1-docker.pkg.dev/clgcporg10-186/todoiz/todoiz-app:v1 --file=app/Dockerfile
+  deploy:
+    runs-on: ubuntu-latest
+    needs: security-can
+    steps:
+      - run: echo "Run terraform plan, validate, apply"
