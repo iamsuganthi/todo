@@ -19,5 +19,4 @@ crash.log
 override.tf
 override.tf.json
 
-# Kubernetes
-k8s/secret-mongo.yaml
+

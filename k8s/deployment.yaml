@@ -32,5 +32,6 @@ spec:
               value: "0.0.0.0"
             - name: PORT
               value: "3000"
+            # directConnection: standalone VM Mongo (skip replica-set discovery that can confuse server selection).
             - name: MONGO_URI
-              value: "mongodb://mangosteenadmin:change-me@mangosteen-mongo:27017/mangosteen"
+              value: "mongodb://mangosteenadmin:change-me@mangosteen-mongo:27017/mangosteen?directConnection=true"
