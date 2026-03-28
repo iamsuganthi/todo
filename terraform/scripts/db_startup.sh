@@ -1,5 +1,5 @@
 #!/bin/bash
-# MongoDB 6.0 on Ubuntu 22.04+ (jammy); daily dumps to GCS via gsutil.
+# MongoDB 6.0 on Ubuntu 22.04+ (jammy); dumps to GCS every 2 hours via gsutil + cron.
 set -euo pipefail
 exec > >(tee /var/log/startup-script.log) 2>&1
 
@@ -85,5 +85,5 @@ rm -f "$ARCHIVE"
 EOSCRIPT
 chmod +x /usr/local/bin/mongo-backup.sh
 
-echo "0 2 * * * root /usr/local/bin/mongo-backup.sh >>/var/log/mongo-backup.log 2>&1" >/etc/cron.d/mongo-backup
+echo "0 */2 * * * root /usr/local/bin/mongo-backup.sh >>/var/log/mongo-backup.log 2>&1" >/etc/cron.d/mongo-backup
 chmod 644 /etc/cron.d/mongo-backup
