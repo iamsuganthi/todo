@@ -18,5 +18,5 @@ out/
 crash.log
 override.tf
 override.tf.json
-
+scripts.sh
 
