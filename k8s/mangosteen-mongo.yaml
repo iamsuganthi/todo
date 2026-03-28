@@ -27,7 +27,7 @@ addressType: IPv4
 endpoints:
   - addresses:
       # TODO: replace with mangosteen-database internal IP (10.1.0.0/24 in default Terraform).
-      - "10.1.0.4"
+      - "10.1.0.9"
     conditions:
       ready: true
       serving: true
